@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+.env
+*.egg-info/
+dist/
+.qdrant_storage/
+repos/
+*.db
+.DS_Store
+node_modules/
+frontend/build/
