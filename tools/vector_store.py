@@ -131,16 +131,19 @@ def search_dense(
     query_vector: list[float], repo_url: str, top_k: int = 20
 ) -> list[Chunk]:
     """Dense vector search filtered by repo_url."""
-    client = get_client()
 
-    results: list[ScoredPoint] = client.search(
-        collection_name=COLLECTION_NAME,
-        query_vector=query_vector,
-        query_filter=Filter(
-            must=[FieldCondition(key="repo_url", match=MatchValue(value=repo_url))]
-        ),
-        limit=top_k,
-    )
+    def _search():
+        client = get_client()
+        return client.query_points(
+            collection_name=COLLECTION_NAME,
+            query=query_vector,
+            query_filter=Filter(
+                must=[FieldCondition(key="repo_url", match=MatchValue(value=repo_url))]
+            ),
+            limit=top_k,
+        ).points
+
+    results = _qdrant_call_with_retry(_search)
 
     chunks = []
     for point in results:
