@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from graph.state import Chunk
 from tools.embedder import embed_query
 from tools.vector_store import search_dense
+from tools.reranker import rerank
 
 load_dotenv()
 
@@ -202,3 +203,33 @@ def find_symbol_references(symbol_name: str, repo_url: str) -> list[Chunk]:
             matches.append(chunk)
 
     return matches[:10]  # Cap at 10 to avoid overwhelming the agent
+
+
+def retrieve(
+    query: str, repo_url: str, top_k_hybrid: int = 20, top_n_rerank: int = 5
+) -> list[Chunk]:
+    """
+    Full retrieval pipeline: hybrid search → rerank → top 5.
+
+    This is the main function the LangGraph agent calls.
+    Steps:
+      1. Embed query + hybrid search (dense + BM25 + RRF) → top 20
+      2. Rerank top 20 with Cohere cross-encoder → top 5
+      3. Return top 5 chunks as agent context
+
+    Args:
+        query:          User's natural language question
+        repo_url:       Which repo to search
+        top_k_hybrid:   Candidates from hybrid search (default 20)
+        top_n_rerank:   Final chunks after reranking (default 5)
+    """
+    # Step 1: Hybrid search — get 20 candidates
+    candidates = hybrid_search(query, repo_url, top_k=top_k_hybrid)
+
+    if not candidates:
+        return []
+
+    # Step 2: Rerank — cut to top 5
+    final_chunks = rerank(query, candidates, top_n=top_n_rerank)
+
+    return final_chunks
