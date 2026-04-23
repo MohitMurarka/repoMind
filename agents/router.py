@@ -22,6 +22,7 @@ RULES:
 4. When you have enough context, write your final answer directly as a message (no tool call).
 5. Maximum 6 tool calls per query.
 6. Format your final answer clearly with code snippets where relevant.
+7. If you have searched 4+ times and are not finding new information, stop searching and write your best answer with what you have found. Do not keep rephrasing the same search query.
 
 CITATION FORMAT:
 When referencing code, always say: "In `file_path` (lines X-Y), the `symbol_name` function..."

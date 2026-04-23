@@ -23,7 +23,10 @@ def run_agent(repo_url: str, query: str) -> dict:
     graph = build_graph(repo_url)
 
     # Invoke with just the query as a HumanMessage
-    response = graph.invoke({"messages": [HumanMessage(content=query)]})
+    response = graph.invoke(
+        {"messages": [HumanMessage(content=query)]},
+        config={"recursion_limit": 50},
+    )
 
     # The last message is the final answer
     final_message = response["messages"][-1]

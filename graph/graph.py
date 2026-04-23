@@ -16,7 +16,6 @@ def build_graph(repo_url: str):
         model=llm_with_tools,
         tools=tools,
         prompt=SYSTEM_PROMPT,
-        max_iterations=6,  # ← add this
     )
 
     return graph
