@@ -149,7 +149,7 @@ def ingest_repo(repo_url: str, clone_dir: Optional[str] = None) -> IngestionResu
                 os.chmod(path, stat.S_IWRITE)
                 func(path)
 
-            shutil.rmtree(clone_dir, onexc=force_remove)
+            shutil.rmtree(clone_dir, onerror=force_remove)
             print(f"Cleaned up temp dir.")
 
     return result
