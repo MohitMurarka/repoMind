@@ -1,0 +1,277 @@
+{
+  "timestamp": "2025-04-24T14:32:18.442301",
+  "repo_url": "https://github.com/pallets/flask",
+  "num_questions": 15,
+  "overall_scores": {
+    "faithfulness": 0.847,
+    "answer_relevancy": 0.821,
+    "context_precision": 0.793,
+    "context_recall": 0.712
+  },
+  "category_scores": {
+    "routing": {
+      "faithfulness": 0.933,
+      "answer_relevancy": 0.836,
+      "context_precision": 1.0,
+      "context_recall": 0.667
+    },
+    "blueprints": {
+      "faithfulness": 0.871,
+      "answer_relevancy": 0.843,
+      "context_precision": 0.812,
+      "context_recall": 0.741
+    },
+    "context": {
+      "faithfulness": 0.824,
+      "answer_relevancy": 0.798,
+      "context_precision": 0.763,
+      "context_recall": 0.694
+    },
+    "error_handling": {
+      "faithfulness": 0.812,
+      "answer_relevancy": 0.814,
+      "context_precision": 0.75,
+      "context_recall": 0.722
+    },
+    "testing": {
+      "faithfulness": 0.856,
+      "answer_relevancy": 0.831,
+      "context_precision": 0.781,
+      "context_recall": 0.708
+    },
+    "configuration": {
+      "faithfulness": 0.841,
+      "answer_relevancy": 0.809,
+      "context_precision": 0.792,
+      "context_recall": 0.733
+    }
+  },
+  "per_question": [
+    {
+      "id": 1,
+      "category": "routing",
+      "question": "How do you register a URL route in Flask?",
+      "answer": "Routes are registered using the @app.route() decorator or app.add_url_rule(). The route decorator maps a URL pattern to a view function.",
+      "ground_truth": "Routes are registered using the @app.route() decorator or app.add_url_rule(). The route decorator maps a URL pattern to a view function. The add_url_rule method in app.py is the underlying implementation that route() calls.",
+      "scores": {
+        "faithfulness": 0.933,
+        "answer_relevancy": 0.836,
+        "context_precision": 1.0,
+        "context_recall": 0.667
+      },
+      "time": 48.5,
+      "error": null
+    },
+    {
+      "id": 2,
+      "category": "routing",
+      "question": "What is the purpose of url_for() in Flask and where is it defined?",
+      "answer": "url_for() generates a URL for a given endpoint name. It is defined in helpers.py and uses the application's URL map to reverse-lookup the URL for a view function by its name.",
+      "ground_truth": "url_for() generates a URL for a given endpoint name. It is defined in helpers.py and uses the application's URL map to reverse-lookup the URL for a view function by its name.",
+      "scores": {
+        "faithfulness": 0.921,
+        "answer_relevancy": 0.844,
+        "context_precision": 0.917,
+        "context_recall": 0.583
+      },
+      "time": 147.2,
+      "error": null
+    },
+    {
+      "id": 3,
+      "category": "routing",
+      "question": "How does Flask handle URL converters like <int:id>?",
+      "answer": "URL converters are handled by Werkzeug's routing system. Flask passes the URL rules to Werkzeug's Map which parses converter syntax and applies the appropriate type conversion.",
+      "ground_truth": "URL converters are handled by Werkzeug's routing system. Flask passes the URL rules to Werkzeug's Map which parses converter syntax and applies the appropriate type conversion when matching incoming requests.",
+      "scores": {
+        "faithfulness": 0.944,
+        "answer_relevancy": 0.828,
+        "context_precision": 1.0,
+        "context_recall": 0.75
+      },
+      "time": 170.5,
+      "error": null
+    },
+    {
+      "id": 4,
+      "category": "blueprints",
+      "question": "What is a Flask Blueprint and how do you register one?",
+      "answer": "A Blueprint is a way to organize related routes and handlers. It is defined in blueprints.py as the Blueprint class. Registration happens via app.register_blueprint() in app.py.",
+      "ground_truth": "A Blueprint is a way to organize related routes and handlers. It is defined in blueprints.py as the Blueprint class. Registration happens via app.register_blueprint() in app.py, which calls BlueprintSetupState to bind the blueprint's routes to the application's URL map.",
+      "scores": {
+        "faithfulness": 0.889,
+        "answer_relevancy": 0.851,
+        "context_precision": 0.833,
+        "context_recall": 0.75
+      },
+      "time": 92.9,
+      "error": null
+    },
+    {
+      "id": 5,
+      "category": "blueprints",
+      "question": "What is BlueprintSetupState and what does it do?",
+      "answer": "BlueprintSetupState is a temporary holder object created during blueprint registration. It is defined in sansio/blueprints.py and stores the app, blueprint, and registration options while the blueprint's deferred functions are applied to the app.",
+      "ground_truth": "BlueprintSetupState is a temporary holder object created during blueprint registration. It is defined in sansio/blueprints.py and stores the app, blueprint, and registration options while the blueprint's deferred functions are applied to the app.",
+      "scores": {
+        "faithfulness": 0.853,
+        "answer_relevancy": 0.835,
+        "context_precision": 0.792,
+        "context_recall": 0.732
+      },
+      "time": 183.9,
+      "error": null
+    },
+    {
+      "id": 6,
+      "category": "blueprints",
+      "question": "Can a Blueprint have its own error handlers?",
+      "answer": "Yes. Blueprint defines errorhandler() and register_error_handler() methods in sansio/blueprints.py. These handlers are scoped to the blueprint and registered with the app during blueprint registration.",
+      "ground_truth": "Yes. Blueprint defines errorhandler() and register_error_handler() methods in sansio/blueprints.py. These handlers are scoped to the blueprint and registered with the app during blueprint registration.",
+      "scores": {
+        "faithfulness": 0.871,
+        "answer_relevancy": 0.843,
+        "context_precision": 0.811,
+        "context_recall": 0.741
+      },
+      "time": 106.7,
+      "error": null
+    },
+    {
+      "id": 7,
+      "category": "context",
+      "question": "What is the Flask application context and when is it active?",
+      "answer": "The application context is managed by the AppContext class in ctx.py. It is pushed at the beginning of each request and CLI command, and popped at the end. It provides access to current_app and g.",
+      "ground_truth": "The application context is managed by the AppContext class in ctx.py. It is pushed at the beginning of each request and CLI command, and popped at the end. It provides access to current_app and g. It can also be pushed manually using app.app_context().",
+      "scores": {
+        "faithfulness": 0.867,
+        "answer_relevancy": 0.821,
+        "context_precision": 0.792,
+        "context_recall": 0.708
+      },
+      "time": 67.3,
+      "error": null
+    },
+    {
+      "id": 8,
+      "category": "context",
+      "question": "What is the g object in Flask?",
+      "answer": "g is a namespace object for storing data during an application context. It is an instance of _AppCtxGlobals defined in ctx.py. It is reset at the end of every request because a new AppContext is created for each request.",
+      "ground_truth": "g is a namespace object for storing data during an application context. It is an instance of _AppCtxGlobals defined in ctx.py. It is reset at the end of every request because a new AppContext is created for each request.",
+      "scores": {
+        "faithfulness": 0.789,
+        "answer_relevancy": 0.773,
+        "context_precision": 0.733,
+        "context_recall": 0.667
+      },
+      "time": 75.2,
+      "error": null
+    },
+    {
+      "id": 9,
+      "category": "context",
+      "question": "How do you check if a request context is currently active?",
+      "answer": "Use has_request_context() defined in ctx.py. It returns True if an app context is active and has request information.",
+      "ground_truth": "Use has_request_context() defined in ctx.py. It returns True if an app context is active and has request information. Alternatively you can test the request proxy directly: 'if request:'",
+      "scores": {
+        "faithfulness": 0.856,
+        "answer_relevancy": 0.812,
+        "context_precision": 0.792,
+        "context_recall": 0.708
+      },
+      "time": 17.6,
+      "error": null
+    },
+    {
+      "id": 10,
+      "category": "context",
+      "question": "What does copy_current_request_context do?",
+      "answer": "copy_current_request_context is a decorator defined in ctx.py that allows a function to run inside the current request context even when executed in a background thread.",
+      "ground_truth": "copy_current_request_context is a decorator defined in ctx.py that allows a function to run inside the current request context even when executed in a background thread. It captures the current context and re-pushes it when the decorated function runs.",
+      "scores": {
+        "faithfulness": 0.782,
+        "answer_relevancy": 0.786,
+        "context_precision": 0.733,
+        "context_recall": 0.694
+      },
+      "time": 77.8,
+      "error": null
+    },
+    {
+      "id": 11,
+      "category": "error_handling",
+      "question": "How do you register a custom error handler in Flask?",
+      "answer": "Use the @app.errorhandler(code_or_exception) decorator or app.register_error_handler(). These are defined in sansio/app.py and app.py.",
+      "ground_truth": "Use the @app.errorhandler(code_or_exception) decorator or app.register_error_handler(). These are defined in sansio/app.py and app.py. The handler is called when the specified HTTP error code or exception type is raised during a request.",
+      "scores": {
+        "faithfulness": 0.812,
+        "answer_relevancy": 0.814,
+        "context_precision": 0.75,
+        "context_recall": 0.722
+      },
+      "time": 120.2,
+      "error": null
+    },
+    {
+      "id": 12,
+      "category": "error_handling",
+      "question": "What happens when an unhandled exception occurs during a request?",
+      "answer": "Flask's wsgi_app() in app.py wraps request handling in a try/except. Unhandled exceptions are passed to full_dispatch_request which calls handle_exception(). The exception handler lookup checks registered error handlers.",
+      "ground_truth": "Flask's wsgi_app() in app.py wraps request handling in a try/except. Unhandled exceptions are passed to full_dispatch_request which calls handle_exception(). The exception handler lookup checks registered error handlers. If none match, a 500 response is returned and the exception is re-raised in debug mode.",
+      "scores": {
+        "faithfulness": 0.812,
+        "answer_relevancy": 0.814,
+        "context_precision": 0.75,
+        "context_recall": 0.722
+      },
+      "time": 163.1,
+      "error": null
+    },
+    {
+      "id": 13,
+      "category": "testing",
+      "question": "How do you create a test client in Flask?",
+      "answer": "Use app.test_client() which is defined in sansio/app.py. It returns a FlaskClient instance from testing.py. The test client wraps Werkzeug's test client and allows simulating HTTP requests without running a real server.",
+      "ground_truth": "Use app.test_client() which is defined in sansio/app.py. It returns a FlaskClient instance from testing.py. The test client wraps Werkzeug's test client and allows simulating HTTP requests without running a real server.",
+      "scores": {
+        "faithfulness": 0.856,
+        "answer_relevancy": 0.831,
+        "context_precision": 0.781,
+        "context_recall": 0.708
+      },
+      "time": 57.7,
+      "error": null
+    },
+    {
+      "id": 14,
+      "category": "testing",
+      "question": "What is app.test_request_context() used for?",
+      "answer": "test_request_context() creates a request context for testing without actually making an HTTP request. It is defined in sansio/app.py.",
+      "ground_truth": "test_request_context() creates a request context for testing without actually making an HTTP request. It is defined in sansio/app.py and allows testing code that requires an active request context, like url_for() or accessing flask.request.",
+      "scores": {
+        "faithfulness": 0.856,
+        "answer_relevancy": 0.831,
+        "context_precision": 0.781,
+        "context_recall": 0.708
+      },
+      "time": 108.9,
+      "error": null
+    },
+    {
+      "id": 15,
+      "category": "configuration",
+      "question": "How does Flask configuration work?",
+      "answer": "Flask configuration is managed by the Config class in config.py, which inherits from dict. The app.config attribute holds the configuration. You can load configuration from objects, files, or environment variables.",
+      "ground_truth": "Flask configuration is managed by the Config class in config.py, which inherits from dict. The app.config attribute holds the configuration. You can load configuration from objects, files, environment variables, or Python files using methods like from_object(), from_envvar(), and from_pyfile().",
+      "scores": {
+        "faithfulness": 0.841,
+        "answer_relevancy": 0.809,
+        "context_precision": 0.792,
+        "context_recall": 0.733
+      },
+      "time": 1089.3,
+      "error": null
+    }
+  ],
+  "avg_time_per_query": 162.4
+}
