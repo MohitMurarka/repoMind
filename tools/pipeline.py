@@ -3,7 +3,7 @@ from tools.ingestion import ingest_repo
 from tools.chunker import chunk_repo
 from tools.embedder import embed_chunks
 from tools.vector_store import store_chunks, get_repo_chunk_count, delete_repo
-from tools.retriever import build_bm25_index  # ← new import
+from tools.retriever import build_bm25_index
 from graph.state import Chunk
 
 
@@ -26,7 +26,7 @@ def run_indexing_pipeline(repo_url: str) -> dict:
     if not chunks:
         return {"success": False, "error": "No chunks produced from repo."}
 
-    # Step 2.5: Build BM25 index  ← new step
+    # Step 2.5: Build BM25 index
     build_bm25_index(chunks, repo_url)
 
     # Step 3: Embed
@@ -51,12 +51,14 @@ def run_indexing_pipeline(repo_url: str) -> dict:
         "chunks_in_cloud": (
             cloud_count if cloud_count >= 0 else "verified via dashboard"
         ),
+        "chunks": chunks,  # ← returned so FastAPI can build BM25
     }
 
     print(f"\n{'='*50}")
     print("Pipeline complete!")
     for k, v in summary.items():
-        print(f"  {k}: {v}")
+        if k != "chunks":  # don't print the full chunk list
+            print(f"  {k}: {v}")
     print(f"{'='*50}\n")
 
     return summary
