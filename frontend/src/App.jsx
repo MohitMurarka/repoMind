@@ -88,8 +88,9 @@ function CopyButton({ text }) {
 
 // ── MessageBubble ────────────────────────────────────────────────
 function MessageBubble({ msg }) {
+  const cleanContent = msg.content.replace(/\[([^\]]+)\]\(http[^)]+\)/g, "$1");
   const parts =
-    msg.type === "assistant" ? extractCodeBlocks(msg.content) : null;
+    msg.type === "assistant" ? extractCodeBlocks(cleanContent) : null;
 
   if (msg.type === "system")
     return (
