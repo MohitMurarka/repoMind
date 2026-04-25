@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="screenshots/logo.png" alt="RepoMind" width="80" />
-
 # RepoMind
 
 ### Ask anything about any codebase. Get cited answers.
@@ -10,6 +8,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Agent-FF6B6B?style=for-the-badge)](https://langchain-ai.github.io/langgraph/)
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector%20DB-DC244C?style=for-the-badge)](https://qdrant.tech)
+[![Render](https://img.shields.io/badge/Render-Backend%20Hosting-46E3B7?style=for-the-badge&logo=render)](https://render.com)
 
 *Paste a GitHub URL → RepoMind indexes the codebase with AST-aware chunking → A LangGraph agent traces across files → You get a cited answer with exact file paths and line numbers.*
 
@@ -18,8 +17,6 @@
 ---
 
 ## Demo
-
-<!-- Replace with your actual screenshots -->
 
 **Indexing a repository:**
 
@@ -37,80 +34,77 @@
 
 ## How It Works
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        INDEXING PIPELINE                            │
-│                                                                     │
-│   GitHub URL                                                        │
-│       │                                                             │
-│       ▼                                                             │
-│   ┌─────────┐    ┌──────────────┐    ┌──────────┐    ┌──────────┐ │
-│   │  Clone  │───▶│ AST Chunker  │───▶│ Embedder │───▶│  Qdrant  │ │
-│   │GitPython│    │ (tree-sitter)│    │  OpenAI  │    │  Cloud   │ │
-│   └─────────┘    └──────────────┘    └──────────┘    └──────────┘ │
-│                  Functions, classes                 Vector Store   │
-│                  never split mid-                   + BM25 Index   │
-│                  expression                                        │
-└─────────────────────────────────────────────────────────────────────┘
+### Indexing Pipeline
 
-┌─────────────────────────────────────────────────────────────────────┐
-│                       RETRIEVAL STACK                               │
-│                                                                     │
-│   User Query                                                        │
-│       │                                                             │
-│       ├──────────────────┬──────────────────┐                      │
-│       ▼                  ▼                  │                      │
-│  ┌─────────┐       ┌──────────┐             │                      │
-│  │  Dense  │       │  Sparse  │             │                      │
-│  │ Search  │       │  BM25    │             │                      │
-│  │ Qdrant  │       │ Keyword  │             │                      │
-│  │ Top 20  │       │ Top 20   │             │                      │
-│  └────┬────┘       └────┬─────┘             │                      │
-│       │                 │                   │                      │
-│       └────────┬────────┘                   │                      │
-│                ▼                            │                      │
-│        ┌──────────────┐                     │                      │
-│        │ RRF Fusion   │  Reciprocal Rank    │                      │
-│        │  Merged 20   │  Fusion merges      │                      │
-│        └──────┬───────┘  both lists         │                      │
-│               │                             │                      │
-│               ▼                             │                      │
-│        ┌──────────────┐                     │                      │
-│        │   Cohere     │  Cross-encoder      │                      │
-│        │  Reranker    │  rescores top 20    │                      │
-│        │   Top 5      │  → precise top 5    │                      │
-│        └──────┬───────┘                     │                      │
-│               │                             │                      │
-└───────────────┼─────────────────────────────┘                      
-                ▼                                                     
-┌─────────────────────────────────────────────────────────────────────┐
-│                      LANGGRAPH AGENT                                │
-│                                                                     │
-│                    ┌─────────────┐                                  │
-│                    │   Router    │◀─────────────────┐              │
-│                    │  GPT-4o-mini│                  │              │
-│                    └──────┬──────┘                  │              │
-│                           │                         │              │
-│              ┌────────────┼────────────┐            │              │
-│              ▼            ▼            ▼            │              │
-│      ┌──────────┐  ┌──────────┐  ┌──────────┐      │              │
-│      │ search_  │  │ get_file │  │  find_   │      │              │
-│      │codebase  │  │          │  │references│      │              │
-│      │ hybrid   │  │full file │  │ symbol   │      │              │
-│      │ search   │  │contents  │  │locations │      │              │
-│      └────┬─────┘  └────┬─────┘  └────┬─────┘      │              │
-│           └─────────────┴─────────────┘             │              │
-│                         │                           │              │
-│                         ▼                           │              │
-│                ┌─────────────────┐                  │              │
-│                │  Tool Results   │──────────────────┘              │
-│                │ (context added  │   Loop until enough context     │
-│                │  to state)      │   or max iterations reached     │
-│                └────────┬────────┘                                 │
-│                         │ Final answer                             │
-│                         ▼                                          │
-│              Cited answer with file:line references                │
-└─────────────────────────────────────────────────────────────────────┘
+```
+GitHub URL
+    │
+    ▼
+┌──────────┐    ┌────────────────┐    ┌──────────┐    ┌─────────────┐
+│  Clone   │───▶│  AST Chunker   │───▶│ Embedder │───▶│   Qdrant    │
+│GitPython │    │ (tree-sitter)  │    │  OpenAI  │    │   Cloud     │
+└──────────┘    └────────────────┘    └──────────┘    └─────────────┘
+                Functions & classes                   Vector Store
+                never split mid-expression            + BM25 Index
+```
+
+### Retrieval Stack
+
+```
+User Query
+    │
+    ├──────────────────────┐
+    ▼                      ▼
+┌──────────┐          ┌──────────┐
+│  Dense   │          │  Sparse  │
+│  Search  │          │  BM25    │
+│  Qdrant  │          │ Keyword  │
+│  Top 20  │          │  Top 20  │
+└────┬─────┘          └────┬─────┘
+     │                     │
+     └──────────┬──────────┘
+                ▼
+        ┌──────────────┐
+        │  RRF Fusion  │  Reciprocal Rank Fusion
+        │  Merged 20   │  merges both result lists
+        └──────┬───────┘
+               │
+               ▼
+        ┌──────────────┐
+        │    Cohere    │  Cross-encoder rescores
+        │   Reranker   │  top 20 → precise top 5
+        │    Top 5     │
+        └──────┬───────┘
+               │
+               ▼
+```
+
+### LangGraph Agent
+
+```
+               ┌─────────────┐
+               │    Router   │◀──────────────────┐
+               │ GPT-4o-mini │                   │
+               └──────┬──────┘                   │
+                      │                          │
+         ┌────────────┼────────────┐             │
+         ▼            ▼            ▼             │
+  ┌────────────┐ ┌──────────┐ ┌──────────────┐  │
+  │  search_   │ │ get_file │ │ find_        │  │
+  │  codebase  │ │          │ │ references   │  │
+  │  (hybrid)  │ │full file │ │ (symbol      │  │
+  │            │ │contents  │ │  locations)  │  │
+  └─────┬──────┘ └────┬─────┘ └──────┬───────┘  │
+        └─────────────┴───────────────┘          │
+                      │                          │
+                      ▼                          │
+             ┌─────────────────┐                 │
+             │  Tool Results   │─────────────────┘
+             │ (added to state)│  Loop until enough context
+             └────────┬────────┘  or max iterations reached
+                      │
+                      ▼ Final answer
+         Cited answer with file:line references
 ```
 
 ---
@@ -233,22 +227,22 @@ COHERE_API_KEY=        # Cohere API key (reranker)
 
 ## API Reference
 
-```
-POST   /index                    Start indexing a GitHub repo
-GET    /repos                    List all indexed repos + status
-GET    /repos/{url}/status       Check indexing progress for a repo
-POST   /query                    Query an indexed repo
-DELETE /repos/{url}              Remove a repo from the index
-GET    /health                   Health check
-GET    /docs                     Auto-generated Swagger UI
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/index` | Start indexing a GitHub repo |
+| `GET` | `/repos` | List all indexed repos + status |
+| `GET` | `/repos/{url}/status` | Check indexing progress for a repo |
+| `POST` | `/query` | Query an indexed repo |
+| `DELETE` | `/repos/{url}` | Remove a repo from the index |
+| `GET` | `/health` | Health check |
+| `GET` | `/docs` | Auto-generated Swagger UI |
 
 ---
 
 ## Run Evaluation
 
 ```bash
-# Smoke test — no agent calls, just validates RAGAS pipeline
+# Smoke test — validates RAGAS pipeline without agent calls
 python eval/ragas_eval.py --smoke
 
 # Quick eval — 5 questions, one per category
@@ -268,7 +262,7 @@ Results saved to `eval/ragas_results.json`.
 ## Known Limitations
 
 - **Module-level assignments** are not extracted by the AST chunker (e.g. `g = _AppCtxGlobalsProxy(...)` in Flask). Only function and class definitions are chunked. Fix: add `expression_statement` nodes at module level.
-- **External dependencies** are not indexed. Questions that require tracing into third-party libraries (e.g. Werkzeug internals from Flask questions) will have partial answers.
+- **External dependencies** are not indexed. Questions requiring traces into third-party libraries (e.g. Werkzeug internals from Flask questions) will yield partial answers.
 - **BM25 index** is in-memory and rebuilt from Qdrant payloads on server startup. No additional storage required.
 - **Free tier cold starts** on Render add ~50 seconds to the first request after 15 minutes of inactivity.
 
@@ -276,6 +270,6 @@ Results saved to `eval/ragas_results.json`.
 
 <div align="center">
 
-Built with LangGraph · Qdrant · OpenAI · Cohere · FastAPI · React
+Built with LangGraph · Qdrant · OpenAI · Cohere · FastAPI · React · Render
 
 </div>
