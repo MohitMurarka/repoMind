@@ -88,7 +88,7 @@ def run_multihop_tests():
 
         response = graph.invoke(
             {"messages": [HumanMessage(content=test["query"])]},
-            config={"recursion_limit": 50},
+            config={"recursion_limit": 60},
         )
 
         elapsed = time.time() - start

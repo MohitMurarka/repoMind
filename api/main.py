@@ -293,7 +293,7 @@ def query_repo(request: QueryRequest):
         graph = build_graph(repo_url)
         response = graph.invoke(
             {"messages": [HumanMessage(content=request.query)]},
-            config={"recursion_limit": 50},
+            config={"recursion_limit": 60},
         )
 
         final_answer = response["messages"][-1].content
